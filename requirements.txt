@@ -1,0 +1,9 @@
+opencv-python
+torch
+transformers
+einops
+timm
+pandas
+iopath
+omegaconf
+sentencepiece

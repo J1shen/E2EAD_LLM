@@ -1,5 +1,4 @@
 import cv2
-import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import einops
@@ -179,6 +178,7 @@ class Mymodel(Blip2Base):
             self.video_Qformer.to(device)
             self.video_frame_position_embedding.to(device)
             self.llama_proj.to(device)
+            self.video_query_tokens.to(device)
 
             image_embeds = self.ln_vision(self.visual_encoder(image)).to(device)
             image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device)
@@ -200,9 +200,9 @@ class Mymodel(Blip2Base):
             frame_hidden_state = frame_position_embeddings + frame_hidden_state
 
             # frame attention
-            frame_hidden_state =  einops.rearrange(frame_hidden_state, 'b t q h -> b (t q) h',b=batch_size,t=time_length)
+            frame_hidden_state =  einops.rearrange(frame_hidden_state, 'b t q h -> b (t q) h',b=batch_size,t=time_length).to(device)
             frame_atts = torch.ones(frame_hidden_state.size()[:-1], dtype=torch.long).to(device)
-            video_query_tokens = self.video_query_tokens.expand(frame_hidden_state.shape[0], -1, -1)
+            video_query_tokens = self.video_query_tokens.expand(frame_hidden_state.shape[0], -1, -1).to(device)
 
             video_query_output = self.video_Qformer.bert(
                 query_embeds=video_query_tokens,
