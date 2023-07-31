@@ -62,16 +62,16 @@ class Blip2Base(BaseModel):
     def init_vision_encoder(
         cls, img_size, drop_path_rate, use_grad_checkpoint, precision
     ):
-        visual_encoder = vit_init(img_size, drop_path_rate, use_grad_checkpoint)
+        visual_encoder = vit_init(img_size, drop_path_rate, use_grad_checkpoint,precision)
         ln_vision = LayerNorm(visual_encoder.num_features)
-
+        '''
         if precision == 'fp16':
             visual_encoder.half().to('cuda')
             ln_vision.to('cuda')
-            
+        '''
         return visual_encoder, ln_vision
     
-    def init_video_Qformer(cls, num_query_token, vision_width,num_hidden_layers =2):
+    def init_video_Qformer(cls, num_query_token, vision_width,num_hidden_layers=2):
         encoder_config = BertConfig.from_pretrained("bert-base-uncased")
         encoder_config.num_hidden_layers = num_hidden_layers
         encoder_config.encoder_width = vision_width

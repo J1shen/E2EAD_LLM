@@ -402,16 +402,16 @@ def convert_weights_to_fp16(model: nn.Module):
             l.weight.data = l.weight.data.half()
             if l.bias is not None:
                 l.bias.data = l.bias.data.half()
-
+        '''
         if isinstance(l, (nn.MultiheadAttention, Attention)):
             for attr in [*[f"{s}_proj_weight" for s in ["in", "q", "k", "v"]], "in_proj_bias", "bias_k", "bias_v"]:
                 tensor = getattr(l, attr)
                 if tensor is not None:
                     tensor.data = tensor.data.half()
-
+        '''
     model.apply(_convert_weights_to_fp16)
 
-def vit_init(img_size, drop_path_rate, use_grad_checkpoint):
+def vit_init(img_size, drop_path_rate, use_grad_checkpoint,precision):
     visual_encoder = VisionTransformer(
         img_size=img_size,
         patch_size=14,
@@ -434,4 +434,7 @@ def vit_init(img_size, drop_path_rate, use_grad_checkpoint):
     interpolate_pos_embed(visual_encoder,state_dict)
     
     incompatible_keys = visual_encoder.load_state_dict(state_dict, strict=False)
+
+    if precision == 'fp16':
+        convert_weights_to_fp16(visual_encoder)
     return visual_encoder

@@ -63,7 +63,7 @@ class Registry:
         """
 
         def wrap(task_cls):
-            from video_llama.tasks.base_task import BaseTask
+            from tasks.base_task import BaseTask
 
             assert issubclass(
                 task_cls, BaseTask
@@ -92,7 +92,7 @@ class Registry:
         """
 
         def wrap(model_cls):
-            from video_llama.models import BaseModel
+            from models import BaseModel
 
             assert issubclass(
                 model_cls, BaseModel
@@ -121,7 +121,7 @@ class Registry:
         """
 
         def wrap(processor_cls):
-            from video_llama.processors import BaseProcessor
+            from processors import BaseProcessor
 
             assert issubclass(
                 processor_cls, BaseProcessor
